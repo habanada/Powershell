@@ -85,3 +85,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+## Legal
+
+“Pandoc” is a separate tool by John MacFarlane and contributors. “Google” and “Gemini” are trademarks of Google LLC. “Microsoft” and “Windows” are trademarks of Microsoft Corporation. All other names are trademarks of their respective owners. Use here is for identification only, no endorsement implied.
