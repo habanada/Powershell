@@ -1,0 +1,28 @@
+$htmlFilePath = "C:\temp\Google Gemini.html"
+
+$outputDir = "C:\temp\output"
+
+
+if (-not (Test-Path -Path $outputDir)) {
+    New-Item -ItemType Directory -Path $outputDir | Out-Null
+}
+$html = New-Object -ComObject "HTMLFile"
+$fileContent = Get-Content -Raw -Path $htmlFilePath -Encoding UTF8
+$html.IHTMLDocument2_write($fileContent)
+$allDivs = $html.getElementsByTagName("div")
+$className = "markdown markdown-main-panel stronger enable-updated-hr-color"
+$messageContents = $allDivs | Where-Object { $_.className -eq $className }
+$fileCounter = 1
+
+foreach ($content in $messageContents) {
+    $outputFilePath = Join-Path -Path $outputDir -ChildPath "antwort_$fileCounter.txt"
+    $content.innerText | Out-File -FilePath $outputFilePath -Encoding UTF8
+    $fileCounter++
+}
+
+ $html.Close()
+[System.Runtime.InteropServices.Marshal]::ReleaseComObject($html) | Out-Null
+[System.GC]::Collect()
+[System.GC]::WaitForPendingFinalizers()
+
+Write-Host "Extraktion abgeschlossen! $($messageContents.Count) Antworten wurden im Ordner '$outputDir' gespeichert."
