@@ -1,0 +1,41 @@
+$htmlFilePath = "C:\temp\Google Gemini.html"
+$outputDir = "C:\temp\output"
+
+
+if (-not (Get-Command pandoc -ErrorAction SilentlyContinue)) {
+    Write-Host "FEHLER: Pandoc wurde nicht gefunden." -ForegroundColor Red
+    Write-Host "Bitte installiere es von https://pandoc.org/installing.html und starte dieses PowerShell-Fenster neu."
+    # Das Skript wird hier beendet, weil die wichtigste Komponente fehlt.
+    return
+}
+
+Write-Host "Pandoc gefunden. Starte die Extraktion und Konvertierung..."
+
+if (-not (Test-Path -Path $outputDir)) {
+    New-Item -ItemType Directory -Path $outputDir | Out-Null
+}
+
+$html = New-Object -ComObject "HTMLFile"
+$fileContent = Get-Content -Raw -Path $htmlFilePath -Encoding UTF8
+$html.IHTMLDocument2_write($fileContent)
+
+$allDivs = $html.getElementsByTagName("div")
+$className = "markdown markdown-main-panel stronger enable-updated-hr-color"
+$messageContents = $allDivs | Where-Object { $_.className -eq $className }
+
+$fileCounter = 1
+
+foreach ($content in $messageContents) {
+    # Hole den vollen HTML-Inhalt der Antwort.
+    $htmlContent = $content.innerHTML
+    $outputFilePath = Join-Path -Path $outputDir -ChildPath "antwort_$fileCounter.md"    
+    $htmlContent | pandoc -f html -t gfm -o $outputFilePath    
+    $fileCounter++
+}
+
+$html.Close()
+[System.Runtime.InteropServices.Marshal]::ReleaseComObject($html) | Out-Null
+[System.GC]::Collect()
+[System.GC]::WaitForPendingFinalizers()
+
+Write-Host "Konvertierung abgeschlossen! $($messageContents.Count) Antworten wurden als Markdown im Ordner '$outputDir' gespeichert." -ForegroundColor Green
