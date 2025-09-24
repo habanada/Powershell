@@ -1,71 +1,89 @@
-# GeminiSavedHtmlToTxt.ps1
+# Gemini HTML → TXT / MD (PowerShell)
 
-**What it does**
-Parses a locally saved **Google Gemini chat HTML** file and exports the **assistant’s replies** as individual, plain-text files (`.txt`). Each response becomes `001.txt`, `002.txt`, … in an output folder.
+Two small PowerShell scripts to archive locally saved **Google Gemini** chats.
 
-**Why it’s useful**
-
-* Creates a clean, offline archive of your Gemini conversations.
-* Plain text is easy to search, diff, or feed into other tools.
-* Keeps each reply separate, which is ideal for dataset building or notes.
-
-**How it works (high level)**
-
-* Loads the HTML from disk.
-* Locates the message/reply blocks in the page.
-* Extracts their textual content.
-* Writes them as numbered `.txt` files to the chosen output directory.
-
-**Requirements**
-
-* Windows with PowerShell.
-* A locally saved Gemini chat page (HTML).
-
-**Output**
-A folder (e.g., `C:\temp\output`) containing `001.txt`, `002.txt`, … each holding one assistant response.
+- **GeminiSavedHtmlToTxt.ps1** – export assistant replies to numbered `.txt` files.
+- **GeminiHtmlSaveToMD_OverPandoc.ps1** – convert assistant replies to numbered `.md` files via **Pandoc** (GitHub-Flavored Markdown).
 
 ---
 
-# GeminiHtmlSaveToMD_OverPandoc.ps1
+## 1) GeminiSavedHtmlToTxt.ps1
 
-**What it does**
-Converts a locally saved **Google Gemini chat HTML** into **Markdown** (`.md`) using **Pandoc**. Exports each assistant reply as its own Markdown file (GitHub-Flavored Markdown).
+### What it does
+Parses a locally saved Google Gemini chat **HTML** file and exports the **assistant’s replies** as individual, plain-text files (`.txt`).  
+Each reply becomes `001.txt`, `002.txt`, … in the output folder.
 
-**Why it’s useful**
+### Why it’s useful
+- Creates a clean, offline archive of your Gemini conversations.
+- Plain text is easy to search, diff, and feed into other tools.
+- Keeps each reply separate—ideal for datasets or notes.
 
-* Produces clean, portable Markdown for documentation, wikis, or Git repos.
-* Preserves basic formatting better than raw text.
-* Plays nicely with static site generators and code review workflows.
+### How it works (high level)
+1. Loads the HTML from disk.  
+2. Locates the assistant message blocks.  
+3. Extracts their textual content.  
+4. Writes numbered `.txt` files to the chosen output directory.
 
-**How it works (high level)**
+### Requirements
+- Windows with PowerShell.
+- A locally saved Gemini chat page (HTML).
 
-* Verifies that **Pandoc** is installed and available on `PATH`.
-* Loads the HTML, identifies the assistant reply blocks.
-* Streams each reply through Pandoc (`-f html -t gfm`) to generate `.md`.
-* Saves numbered Markdown files into the output directory.
-
-**Requirements**
-
-* Windows with PowerShell.
-* **Pandoc** installed (and on `PATH`).
-* A locally saved Gemini chat page (HTML).
-
-**Output**
-A folder (e.g., `C:\temp\output`) containing `001.md`, `002.md`, … each holding one assistant response in GFM.
+### Output
+A folder (e.g., `C:\temp\output`) containing `001.txt`, `002.txt`, … each with one assistant reply.
 
 ---
 
-## Notes for both scripts
+## 2) GeminiHtmlSaveToMD_OverPandoc.ps1
 
-* Update the `$htmlFilePath` and `$outputDir` variables to match your environment.
-* Both scripts work offline on local files—no credentials required.
-* Ideal for backing up, cleaning, and reusing Gemini content across tooling.
+### What it does
+Converts a locally saved Google Gemini chat **HTML** into **Markdown** (`.md`) using **Pandoc**.  
+Exports each assistant reply as its own Markdown file (GitHub-Flavored Markdown).
+
+### Why it’s useful
+- Produces clean, portable Markdown for docs, wikis, and repos.
+- Preserves basic formatting better than raw text.
+- Works smoothly with static site generators and code review workflows.
+
+### How it works (high level)
+1. Verifies **Pandoc** is installed and on `PATH`.  
+2. Loads the HTML and identifies assistant reply blocks.  
+3. Streams each block through Pandoc (`-f html -t gfm`) to produce `.md`.  
+4. Saves numbered Markdown files to the output directory.
+
+### Requirements
+- Windows with PowerShell.
+- **Pandoc** installed (and on `PATH`).
+- A locally saved Gemini chat page (HTML).
+
+### Output
+A folder (e.g., `C:\temp\output`) containing `001.md`, `002.md`, … each with one assistant reply in GFM.
 
 ---
 
-## MIT License
+## Usage
 
-### Copyright (c) 2025 Selahattin Erkoc
+### 1) GeminiSavedHtmlToTxt.ps1 (manual edit)
+
+1. Open the script and edit these lines to your paths:
+   ```powershell
+   $htmlFilePath = "C:\temp\Google Gemini.html"
+   $outputDir    = "C:\temp\output"
+
+
+---
+
+## Notes (both scripts)
+
+* Update your input HTML path and output directory as needed.
+* Works fully **offline** on local files—no credentials required.
+* Files are zero-padded to keep ordering.
+
+---
+
+## License
+
+MIT License
+Copyright (c) 2025 Selahattin Erkoc
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
@@ -85,6 +103,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+---
+
 ## Legal
 
-“Pandoc” is a separate tool by John MacFarlane and contributors. “Google” and “Gemini” are trademarks of Google LLC. “Microsoft” and “Windows” are trademarks of Microsoft Corporation. All other names are trademarks of their respective owners. Use here is for identification only, no endorsement implied.
+“Pandoc” is a separate tool by John MacFarlane and contributors.
+“Google” and “Gemini” are trademarks of Google LLC.
+“Microsoft” and “Windows” are trademarks of Microsoft Corporation.
+All other names are trademarks of their respective owners. Use here is for identification only; no endorsement implied.
+
