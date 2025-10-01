@@ -1,0 +1,51 @@
+## Options
+$FolderPath = "C:\Users\TestUser\source\repos\MyProject"
+$FileExtensions = @(".cs", ".xaml", ".css", ".html", ".js", ".pas", ".dfm")  # Extensions including dot (e.g., .cs, .txt, .config)
+$ShowFileName = $true
+$SeparatorLine = $true
+$IgnoredFolders = @(".git", ".vs", ".vshistory", "log", "obj", "thirdparty-lib", ".Test", "packages") 
+$OutputFile = "C:\temp\MyProject_Files.txt"
+
+# Ensure output folder exists
+$TargetFolder = Split-Path $OutputFile
+if (-not (Test-Path $TargetFolder)) {
+    New-Item -ItemType Directory -Path $TargetFolder | Out-Null
+}
+
+# Remove old file if exists
+if (Test-Path $OutputFile) {
+    Remove-Item $OutputFile
+}
+
+# Collect files recursively
+$allFiles = Get-ChildItem -Path $FolderPath -Recurse -File | Where-Object {
+    # 1. File extension must be allowed
+    $validExtension = $FileExtensions -contains $_.Extension.ToLower()
+
+    # 2. None of the ignored folders should appear in the path
+    $subPath = $_.FullName.ToLower()
+    $notIgnored = -not ($IgnoredFolders | Where-Object { $subPath -like "*\$_\*" })
+
+    return $validExtension -and $notIgnored
+}
+
+# Process files
+foreach ($file in $allFiles) {
+    Write-Host "📄 Processing: $($file.FullName)" -ForegroundColor Cyan
+
+    if ($ShowFileName) {
+        $file.FullName | Out-File -FilePath $OutputFile -Append -Encoding UTF8
+    }
+
+    try {
+        Get-Content $file.FullName -ErrorAction Stop | Out-File -FilePath $OutputFile -Append -Encoding UTF8
+    } catch {
+        Write-Host "❌ Error reading file: $($file.FullName)" -ForegroundColor Red
+    }
+
+    if ($SeparatorLine) {
+        "---" | Out-File -FilePath $OutputFile -Append -Encoding UTF8
+    }
+}
+
+Write-Host "`n✅ Done! File saved at: $OutputFile" -ForegroundColor Green
