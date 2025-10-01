@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: MIT
+# Copyright 2025 Selahattin Erkoc
+
+#Merges Text or Code files to one File usable for KI as datasource 
+
 ## Options
 $FolderPath = "C:\Users\TestUser\source\repos\MyProject"
 $FileExtensions = @(".cs", ".xaml", ".css", ".html", ".js", ".pas", ".dfm")  # Extensions including dot (e.g., .cs, .txt, .config)
